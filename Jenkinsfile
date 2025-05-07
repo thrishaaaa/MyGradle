@@ -1,10 +1,16 @@
 pipeline {
-    agent any  // Use any available agent
+    agent any
 
     tools {
-        gradle 'Gradle'  // Ensure this matches the name configured in Jenkins
-        jdk 'JDK'
+        gradle 'Gradle'  // This should match Jenkins tool config
+        jdk 'JDK'        // Same here
     }
+
+    environment {
+        JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -14,25 +20,21 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'gradle build'  // Run Maven build
+                sh 'gradle build'
             }
         }
 
-       stage('Test') {
-           steps {
-               sh 'gradle test'  // Run unit tests
-           }
+        stage('Test') {
+            steps {
+                sh 'gradle test'
+            }
         }
 
-              
         stage('Run Application') {
             steps {
-                // Start the JAR application
                 sh 'gradle run'
             }
         }
-
-        
     }
 
     post {
@@ -44,3 +46,4 @@ pipeline {
         }
     }
 }
+
